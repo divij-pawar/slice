@@ -2,7 +2,7 @@ from pydub import AudioSegment
 from pydub.silence import split_on_silence
 
 
-address = "audio/"
+ADDRESS = "audio/"
 projectname = filename +".wav"
 NUMBER_OF_FILES = 37
 num = 1
@@ -19,12 +19,12 @@ for index in range (NUMBER_OF_FILES):
     file_name=""
 
 for index in range (NUMBER_OF_FILES):
-    path = address + names[index]
+    path = ADDRESS + names[index]
     audio_file = AudioSegment.from_wav(path)
     print(audio_file,"\t",index+1)
 
 for file_in_directory in range(NUMBER_OF_FILES):
-    path = address + names[file_in_directory]
+    path = ADDRESS + names[file_in_directory]
     print(path)
     audio_segment = AudioSegment.from_wav(path)
     print("Average dB -> ",audio_segment.dBFS)
