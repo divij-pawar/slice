@@ -1,27 +1,28 @@
 from pydub import AudioSegment
 from pydub.silence import split_on_silence
 
+address = "audio/" #folder name
+projectname = filename +".wav"  #naming for filename
+NUMBER_OF_FILES = 37 # number of files in folder (to be added as a cli input in future)
+num = 1 # cli input
+file_name = "" 
+seconds_req = 5 # number in seconds u want the clips to be of duration
 
-ADDRESS = "audio/"
-projectname = filename +".wav"
-NUMBER_OF_FILES = 37
-num = 1
-file_name = ""
-seconds_req = 5 
-
-names = []
+names = [] #this block is for adding the wav file names to the names list
 for index in range (NUMBER_OF_FILES):
-    digit_len= len(str(num))
+    digit_len= len(str(num)) #0
     for zeros in range (3-digit_len):
         file_name = file_name +'0'
     names.append(file_name+str(num)+projectname)
     num = num + 1
     file_name=""
 
-for index in range (NUMBER_OF_FILES):
-    path = ADDRESS + names[index]
+#this block is for printing the found files in the directory as audio segments
+for index in range (NUMBER_OF_FILES): 
+    path = address + names[index]
     audio_file = AudioSegment.from_wav(path)
     print(audio_file,"\t",index+1)
+
 
 for file_in_directory in range(NUMBER_OF_FILES):
     path = ADDRESS + names[file_in_directory]
