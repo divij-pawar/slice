@@ -4,13 +4,13 @@ from pydub.silence import split_on_silence
 
 address = "audio/"
 projectname = filename +".wav"
-number_of_files = 37
+NUMBER_OF_FILES = 37
 num = 1
 file_name = ""
 seconds_req = 5 
 
 names = []
-for index in range (number_of_files):
+for index in range (NUMBER_OF_FILES):
     digit_len= len(str(num))
     for zeros in range (3-digit_len):
         file_name = file_name +'0'
@@ -18,12 +18,12 @@ for index in range (number_of_files):
     num = num + 1
     file_name=""
 
-for index in range (number_of_files):
+for index in range (NUMBER_OF_FILES):
     path = address + names[index]
     audio_file = AudioSegment.from_wav(path)
     print(audio_file,"\t",index+1)
 
-for file_in_directory in range(number_of_files):
+for file_in_directory in range(NUMBER_OF_FILES):
     path = address + names[file_in_directory]
     print(path)
     audio_segment = AudioSegment.from_wav(path)
