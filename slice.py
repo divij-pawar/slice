@@ -23,16 +23,18 @@ for index in range (NUMBER_OF_FILES):
     audio_file = AudioSegment.from_wav(path)
     print(audio_file,"\t",index+1)
 
-
+#checks average db for splitting on silence
 for file_in_directory in range(NUMBER_OF_FILES):
-    path = ADDRESS + names[file_in_directory]
+    path = address + names[file_in_directory]
     print(path)
     audio_segment = AudioSegment.from_wav(path)
     print("Average dB -> ",audio_segment.dBFS)
 
+    #paramteres for splitting on silence
     a_chunks = split_on_silence(audio_segment, min_silence_len=400, silence_thresh=-36, keep_silence=250,seek_step=1)
-
+    #length parameters for splitting audio files
     target_length = seconds_req * 1000
+    #outputting the audio chunks as audio segments
     output_chunks = [a_chunks[0]]
     for chunk in a_chunks[1:]:
         if len(output_chunks[-1]) < target_length:
@@ -41,7 +43,7 @@ for file_in_directory in range(NUMBER_OF_FILES):
             # if the last output chunk is longer than the target length,
             # we can start a new one
             output_chunks.append(chunk)
-
+    #outputting files of the correct audio length
     for i,chunk in enumerate(output_chunks):
 
         out_file = ".//splitAudio//"+names[file_in_directory]+"-part{0}.wav".format(i)
