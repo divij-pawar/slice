@@ -1,6 +1,7 @@
 from pydub import AudioSegment
 from pydub.silence import split_on_silence
 
+filename = input('Enter Filename: ')
 address = "audio/" #folder name
 projectname = filename +".wav"  #naming for filename
 NUMBER_OF_FILES = 37 # number of files in folder (to be added as a cli input in future)
