@@ -5,14 +5,18 @@ The program automatically avoids cutting in-between words to get clips with whol
 
 ## Installation
 
-Just download and run
+pip install -r requirements.txt
+## Usage
+One command line argument for folder name
+example:
 ```bash
-python3 slice.py
+$ python3 slice.py audio
 ```
-
-## Usage (TBA)
-
-
+Enter the wav file inside the directory
+```bash
+$ Enter Filename: speech
+  Address: audio/speech.wav
+```
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
