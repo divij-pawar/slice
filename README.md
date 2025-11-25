@@ -1,18 +1,17 @@
 # Slice: Audio Segmentation for NLP Datasets
 
-**Slice** is a command-line utility designed to automatically segment long audio recordings into smaller, sentence-level clips based on silence. 
+**Slice** is a command-line utility designed to automatically segment long audio recordings into smaller clips based on voice activity.
 
-
-
-It solves the problem of preparing raw audio for **Natural Language Processing (NLP)** and **Speech-to-Text (STT)** model training (like Whisper, Kaldi, or Wav2Vec2) by ensuring clips contain whole sentences without cutting words in half.
+It prepares raw audio for Natural Language Processing (NLP) and Speech-to-Text (STT) model training (like Whisper, Kaldi, or Wav2Vec2) by ensuring clips contain distinct speech segments and creating standard metadata manifests.
 
 ## Features
 
-* **Smart Segmentation:** Uses dB-based silence detection to find natural pauses in speech.
-* **CLI Support:** Fully automatable via command line arguments (no interactive prompts).
+* **Robust Voice Activity Detection (VAD):** Uses WebRTC VAD to distinguish human speech from background noise, which is more accurate than simple energy-based silence detection.
+* **Automatic Preprocessing:** Automatically converts audio to 16kHz Mono (16-bit), the standard format required by most ASR models.
+* **Metadata Generation:** Outputs a `manifest.jsonl` file containing filenames and durations alongside the audio clips.
+* **CLI Support:** Fully automatable via command line arguments.
 * **Batch Processing:** Process single files or entire directories of audio at once.
-* **Dry Run Mode:** Preview how your audio will be split without writing any files (saves disk space while tuning).
-* **Non-Destructive:** Keeps original files intact; saves clips to a new output directory.
+* **Dry Run Mode:** Preview how audio will be split without writing files.
 
 ## Installation
 
@@ -28,7 +27,7 @@ It solves the problem of preparing raw audio for **Natural Language Processing (
     ```
 
 3.  **Install FFmpeg (Required)**
-    Slice relies on `pydub`, which requires FFmpeg to handle audio files.
+    Slice relies on `pydub` to load audio files, which requires FFmpeg.
     * **Mac:** `brew install ffmpeg`
     * **Linux:** `sudo apt-get install ffmpeg`
     * **Windows:** [Download FFmpeg](https://ffmpeg.org/download.html) and add it to your PATH.
@@ -36,7 +35,7 @@ It solves the problem of preparing raw audio for **Natural Language Processing (
 ## Usage
 
 ### Basic Command
-Slice a single audio file using default settings:
+Slice a single audio file using default settings. This will create a folder containing `.wav` clips and a `manifest.jsonl`.
 
 ```bash
 python slice.py audio/interview.wav
@@ -55,29 +54,29 @@ python slice.py audio/interview.wav --dry-run
 ```
 
 ## Configuration / Arguments
-You can tune the sensitivity to fit different microphone qualities or background noise levels.
+You can tune the VAD sensitivity to fit different microphone qualities or background noise levels.
 
 | Argument | Default | Description |
 | :--- | :--- | :--- |
-| `input_path` | *Required* | Path to a file (`speech.wav`) or directory (`/data`). |
-| `--output` | `sliced_audio` | Where to save the result clips. |
-| `--min-silence` | `500` | Minimum length of silence (in ms) required to trigger a split. |
-| `--thresh` | `-40` | Silence threshold in dBFS. Lower values (e.g., -60) are more sensitive to quiet noise. |
-| `--keep-silence` | `100` | How much silence (in ms) to leave at the start/end of each clip (prevents sounding chopped). |
+| `input_path` | *Required* | Path to a file or directory. |
+| `--output` | `sliced_audio` | Directory to save the result clips and manifest. |
+| `--aggressiveness` | `2` | VAD aggressiveness level (0-3). 3 is the most strict at filtering non-speech. |
+| `--padding` | `300` | Milliseconds of silence allowed around speech chunks. Higher values keep words from being cut off. |
+| `--min-duration` | `1.0` | Minimum duration (in seconds) for a clip to be kept. Useful for filtering clicks/coughs. |
 | `--dry-run` | `False` | If set, prints stats but does not save files. |
 | `--verbose` | `False` | Prints detailed processing info for every clip saved. |
 
 ### Examples
 
-**Noisy Audio (High Threshold):**
-If your audio has background buzz, raise the threshold so it isn't mistaken for speech:
+**Noisy Audio:**
+If the audio has significant background noise, increase the aggressiveness to strictly detect human voice:
 ```bash
-python slice.py podcast.wav --thresh -30
+python slice.py podcast.wav --aggressiveness 3
 ```
-**Fast Speech (Short Silence):**
-If the speaker talks fast with short pauses, reduce the minimum silence duration:
+**Keep Short Utterances:**
+To keep very short responses (like "Yes" or "No"), reduce the minimum duration:
 ```bash
-python slice.py speech.wav --min-silence 300
+python slice.py speech.wav --min-duration 0.5
 ```
 
 ## Contributing
